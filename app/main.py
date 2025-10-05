@@ -2,6 +2,7 @@ from fastapi import FastAPI
 
 from app.config import load_config
 from app.logger import logger
+from app.models.models import User
 
 
 app = FastAPI()
@@ -12,18 +13,25 @@ if config.debug:
 else:
     app.debug = False
 
+users = [User(id=1, name="John Doe"), User(id=2, name="Tom Bad")]
+
 
 @app.get("/")
-def root():
+async def root():
     return {"message": "Hello World!"}
 
 
 @app.get("/custom")
-def read_custom_message():
+async def read_custom_message():
     return {"message": "This is a custom message!"}
 
 
 @app.get("/db")
-def get_db_info():
+async def get_db_info():
     logger.info(f"Connecting to database: {config.db.database_url}")
     return {"database_url": config.db.database_url}
+
+
+@app.get("/user")
+async def user():
+    return users
